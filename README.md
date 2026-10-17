@@ -1,6 +1,8 @@
 # titaniumcoder-skills
 
-Personal collection of [Agent Skills](https://agentskills.io/specification) — portable `SKILL.md` directories usable by any spec-compliant agent tool (Pi, Claude Code, and others). No package format, no Pi-specific coupling.
+> **⚠️ Status: setup only.** This repository currently contains scaffolding (validator, tests, lint, CI) and a single dummy `hello` skill used to prove the toolchain works. Real skills (architecture, review, implementation, …) will be added later; this repo exists to establish and verify the setup first.
+
+Personal collection of [Agent Skills](https://agentskills.io/specification) — portable `SKILL.md` directories usable by any spec-compliant agent tool (Pi, Claude Code, Codex, OpenCode, GitHub Copilot, and others). No package format, no tool-specific coupling.
 
 ## Layout
 
@@ -28,16 +30,30 @@ skills/
 
 All three run in CI (`.github/workflows/ci.yml`) on push and pull requests.
 
-## Installing into a tool
+## Installing and updating (all machines)
 
-Clone anywhere, then either symlink the repo root or individual skill directories into the spec discovery location:
+One command installs every skill into every detected agent (Pi, Claude Code, Codex, OpenCode, GitHub Copilot, …) as a canonical copy with per-agent symlinks:
+
+```bash
+npx skills add titaniumcoder/titaniumcoder-skills --all -g -y   # first install (user scope)
+npx skills update -g                                            # pull latest from the repo
+npx skills ls -g                                                # inventory
+```
+
+Versioning: releases are git tags (`v0.0.1`, …). To pin a machine to a release, install at a tag: `npx skills add titaniumcoder/titaniumcoder-skills@v0.0.1 --all -g -y`.
+
+Releasing: on the authoring machine, run the checks, commit, then `git tag -a vX.Y.Z && git push origin main --follow-tags`. CI runs on every push and tag.
+
+## Installing into a single tool (alternative)
+
+Clone anywhere, then symlink individual skill directories into the spec discovery location:
 
 ```bash
 mkdir -p ~/.agents/skills
 ln -s /path/to/titaniumcoder-skills/skills/hello ~/.agents/skills/hello
 ```
 
-Or, Pi-specific: add `"skills": ["/path/to/titaniumcoder-skills/skills"]` to `settings.json`.
+Or point a tool's settings at the repo's `skills/` directory directly.
 
 ## Adding a skill — agent checklist
 
