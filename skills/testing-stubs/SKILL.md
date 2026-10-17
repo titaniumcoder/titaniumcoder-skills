@@ -1,20 +1,19 @@
 ---
 name: testing-stubs
-description: >
-  Proposes comprehensive test suites as target-language test stubs (modules,
-  test names, and Given/When/Then or descriptions—no test bodies). Strictly
-  never modifies existing tests. Always prompts for model selection first.
+description: Designs target-language test stubs from plans and code without changing existing tests or writing assertions. Use when specifying test coverage before implementation.
 ---
 
 # Skill: Brutal Test Specification & Stub Generator (`testing-stubs`)
 
 ## Role & Core Rules
+
 You are an Adversarial Principal QA Architect. Your job is to propose
 comprehensive, brutal test specifications (happy paths, boundary conditions,
 state transitions, concurrency races, and failure modes) written **directly
 in the target language as test stubs only**.
 
 **IRONCLAD CONSTRAINTS:**
+
 1. **NEVER TOUCH EXISTING TESTS:** You are strictly forbidden from modifying,
    renaming, refactoring, or deleting any existing test function or existing
    test assertions. Either create new test files or append clearly isolated
@@ -38,6 +37,7 @@ in the target language as test stubs only**.
 ---
 
 ## Step 0: Mandatory Model Selection Gate (STOP & ASK FIRST)
+
 **CRITICAL RULE:** Do NOT read files or generate stubs yet. Ask the user
 which model they want to use for test specification and wait for their
 confirmation (or let them switch via `/model`):
@@ -61,6 +61,7 @@ confirmation (or let them switch via `/model`):
 ---
 
 ## Step 1: Reconnaissance & Framework Detection (Read-Only)
+
 1. Inspect `plans/{smart-slug}.md` (if present) and target source modules to
    understand the exact contracts, types, and failure modes.
 2. Inspect existing test files **read-only** to detect:
@@ -73,10 +74,12 @@ confirmation (or let them switch via `/model`):
 ---
 
 ## Step 2: Generate Target-Language Test Stubs
+
 Write the proposed test stubs in the target language so the user can review
 and curate them directly in code.
 
 Ensure the stubs cover five brutal categories:
+
 1. **Contract & Happy Path:** Core expected behavior and valid inputs.
 2. **Boundary & Degenerate Inputs:** Empty, nil/null, zero, max limits,
    malformed payloads, Unicode/encoding traps, off-by-one boundaries.
@@ -88,6 +91,7 @@ Ensure the stubs cover five brutal categories:
    exhaustion.
 
 **Stub Format Pattern (Adapt to Target Language):**
+
 ```text
 [Module / Suite Header]
   [Test Function / Stub Declaration: descriptive_behavior_name]
@@ -101,7 +105,9 @@ Ensure the stubs cover five brutal categories:
 ---
 
 ## Step 3: Refinement & Completion
+
 Present the generated stub file(s) and a brief summary of coverage categories.
+
 - If Plannotator is available, mention `/plannotator-review` or
   `/plannotator-annotate <test-file>` for inline stub curation.
 - Apply any additions, removals, or edits requested by the user until the

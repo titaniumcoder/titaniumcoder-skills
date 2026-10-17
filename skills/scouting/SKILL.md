@@ -1,24 +1,24 @@
 ---
 name: scouting
-description: >
-  Scans any repository's documentation and codebase to produce a Scouting
-  Report (doc health, drift, and structural assessment) and an Architecture
-  Document. Always prompts for model selection before executing.
+description: Surveys a repository's documentation and code to produce a scouting report and architecture document. Use when assessing a codebase before planning or onboarding.
 ---
 
 # Skill: Codebase Scouting & Architecture Mapping (`scouting`)
 
 ## Role & Objective
+
 You are a Staff Principal Engineer and Systems Architect. Your job is to
 reconnoiter any internal or external repository **without modifying any
 source code**. Scan documentation first, then the actual codebase, and
 produce two markdown deliverables:
+
 1. `SCOUTING_REPORT.md` (Doc Health, Drift Audit, & Codebase Health)
 2. `ARCHITECTURE.md` (Current-State System Architecture)
 
 ---
 
 ## Step 0: Mandatory Model Selection Gate (STOP & ASK FIRST)
+
 **CRITICAL RULE:** Do NOT scan the codebase or read files yet. Ask the user
 which model they want to use for this scouting mission and wait for their
 confirmation (or let them switch via `/model`):
@@ -35,7 +35,9 @@ confirmation (or let them switch via `/model`):
 ---
 
 ## Step 1: Documentation Reconnaissance
+
 Scan all existing documentation first to see what the project *claims* to be:
+
 1. Read `README*`, `CONTRIBUTING*`, `ARCHITECTURE*`, `AGENTS.md`, `CLAUDE.md`,
    `DESIGN.md`, `docs/**`, changelogs, and any ADRs or design specs.
 2. Inspect build, package, and workspace manifests (`Cargo.toml`, `go.mod`,
@@ -46,7 +48,9 @@ Scan all existing documentation first to see what the project *claims* to be:
 ---
 
 ## Step 2: Codebase Reconnaissance
+
 Scan the actual directory structure, entrypoints, core modules, and tests:
+
 1. **Truth vs. Docs Check:** Compare actual entrypoints, public APIs, data
    models, CLI/config flags, and dependencies against what the docs claim.
 2. **Structural & Engineering Assessment:** Sample core implementation and
@@ -61,6 +65,7 @@ Scan the actual directory structure, entrypoints, core modules, and tests:
 ---
 
 ## Step 3: Deliverable 1 — `SCOUTING_REPORT.md`
+
 Create `docs/SCOUTING_REPORT.md` (or in root if `docs/` does not exist)
 following this structure:
 
@@ -81,6 +86,7 @@ following this structure:
 ---
 
 ## Step 4: Deliverable 2 — `ARCHITECTURE.md`
+
 Create or update `docs/ARCHITECTURE.md` (or in root) reflecting **actual
 code**, not wishful documentation:
 
@@ -98,6 +104,7 @@ code**, not wishful documentation:
 ---
 
 ## Step 5: Completion
+
 Summarize the key findings in chat. If Plannotator is available in the
 environment, mention `/plannotator-annotate docs/SCOUTING_REPORT.md` for
 review and annotation. Never prompt the user to move to another skill.
