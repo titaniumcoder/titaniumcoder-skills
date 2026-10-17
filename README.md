@@ -1,35 +1,42 @@
 # TitaniumCoder Skills
 
-Modular, lifecycle-phased AI agent skills designed for [Pi](https://github.com/badlogic/pi-mono)
-and compatible coding agents.
+Portable, lifecycle-phased Agent Skills for compatible coding agents. Each
+skill follows the [Agent Skills specification](https://agentskills.io/specification)
+and lives in its own directory under `skills/`.
 
-## Core Lifecycle Skills
+## Skills
 
-1. **`scouting`** (`scouting/SKILL.md`) — Scans repository documentation and
-   source code to produce `SCOUTING_REPORT.md` (doc health, drift audit, and
-   structural health) and `ARCHITECTURE.md`.
-2. **`planning`** (`planning/SKILL.md`) — Interactive, zero-assumption
-   architectural discovery and phased execution planning into
-   `plans/{smart-slug}.md`.
-3. **`testing-stubs`** (`testing-stubs/SKILL.md`) — Proposes brutal test
-   specifications as target-language test stubs (`Given / When / Then`) without
-   touching existing tests or writing assertion bodies.
-4. **`implementation`** (`implementation/SKILL.md`) — Splits work into small,
-   worktree-ready subagent artifacts with user approval, enforces zero comments
-   (except `FIXME` test adapters), pure functions, and precision naming. Loads
-   versioned stack rules from `implementation/rules/`.
-5. **`review`** (`review/SKILL.md`) — Audits diffs/PRs against the repository's
-   own architecture, conventions, linters, and modern stack best practices in
-   `review/rules/`.
+- **`scouting`** (`skills/scouting/SKILL.md`) — Surveys repository documentation
+  and code, then produces a scouting report and architecture document.
+- **`planning`** (`skills/planning/SKILL.md`) — Collaboratively discovers
+  requirements and produces a phased implementation plan.
+- **`testing-stubs`** (`skills/testing-stubs/SKILL.md`) — Proposes target-language
+  test specifications without modifying existing tests or writing assertions.
+- **`implementation`** (`skills/implementation/SKILL.md`) — Implements approved,
+  scoped work and curated test stubs, following its implementation rules.
+- **`review`** (`skills/review/SKILL.md`) — Reviews changes against the target
+  repository's conventions, architecture, and quality requirements.
 
-## Installation for Pi
+## Install for Pi
 
-Symlink or clone into your Pi skills directory:
+Clone this repository once, then symlink each skill into Pi's skill directory:
 
 ```bash
-ln -s "$(pwd)/scouting" ~/.pi/agent/skills/scouting
-ln -s "$(pwd)/planning" ~/.pi/agent/skills/planning
-ln -s "$(pwd)/testing-stubs" ~/.pi/agent/skills/testing-stubs
-ln -s "$(pwd)/implementation" ~/.pi/agent/skills/implementation
-ln -s "$(pwd)/review" ~/.pi/agent/skills/review
+git clone https://github.com/titaniumcoder/titaniumcoder-skills.git \
+  ~/.local/share/titaniumcoder-skills
+mkdir -p ~/.pi/agent/skills
+for skill in scouting planning testing-stubs implementation review; do
+  ln -s "$HOME/.local/share/titaniumcoder-skills/skills/$skill" \
+    "$HOME/.pi/agent/skills/$skill"
+done
 ```
+
+To update the installed skills, pull the latest repository changes; the
+symlinks will use the updated files:
+
+```bash
+git -C ~/.local/share/titaniumcoder-skills pull --ff-only
+```
+
+For other Agent Skills-compatible tools, install or link the individual
+directories under `skills/` using that tool's skill-directory convention.
