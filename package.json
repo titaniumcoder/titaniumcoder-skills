@@ -1,6 +1,6 @@
 {
   "name": "titaniumcoder-skills",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "description": "titaniumcoder's Agent Skills collection — portable SKILL.md directories usable by any Agent Skills implementation.",
   "type": "module",
