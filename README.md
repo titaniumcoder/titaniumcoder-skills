@@ -15,7 +15,8 @@ skills/
 1. Create `skills/<name>/SKILL.md` (directory name must match the frontmatter `name`).
 2. Frontmatter needs `name` (lowercase/hyphens, max 64 chars) and `description` (max 1024 chars; state **what it does** and **when to use it** — that is what routes the model).
 3. Bundle supporting files next to `SKILL.md` (`references/`, `scripts/`, `assets/`) and reference them with relative paths.
-4. Keep bodies tool-agnostic: only spec frontmatter fields, no tool-specific commands like `/skill:name`.
+4. Keep frontmatter values single-line and unquoted — the validator parses frontmatter with a simple line parser, not full YAML (intentional, zero-dependency). Quoted scalars, multi-line values, and inline comments are not interpreted.
+5. Keep bodies tool-agnostic: only spec frontmatter fields, no tool-specific commands like `/skill:name`.
 
 ## Checks
 

@@ -34,7 +34,7 @@ export function validateSkill({ skillDir, text }) {
       errors.push(`name '${name}' must be lowercase letters/numbers with single hyphens`);
     }
     if (name !== skillDir) {
-      warnings.push(`name '${name}' differs from directory '${skillDir}' (portable skills should match)`);
+      errors.push(`name '${name}' does not match directory '${skillDir}' (the Agent Skills spec requires them to be equal)`);
     }
   }
 

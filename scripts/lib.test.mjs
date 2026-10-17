@@ -58,11 +58,24 @@ test("description longer than 1024 characters is an error", () => {
   assert.match(r.errors.join(" "), /exceeds 1024/);
 });
 
-test("name that differs from directory is a warning, not an error", () => {
-  const r = validateSkill({ skillDir: "hello", text: okSkill("greeting") });
+test("boundary values are accepted: exactly 64-char name and 1024-char description", () => {
+  const name = "x".repeat(64);
+  const description = "d".repeat(1024);
+  const r = validateSkill({ skillDir: name, text: `---\nname: ${name}\ndescription: ${description}\n---\n` });
   assert.deepEqual(r.errors, []);
-  assert.equal(r.warnings.length, 1);
-  assert.match(r.warnings[0], /differs from directory/);
+});
+
+test("CRLF line endings in frontmatter are handled", () => {
+  const fields = parseFrontmatter("---\r\nname: hello\r\ndescription: Greets people.\r\n---\r\n\r\nBody.");
+  assert.deepEqual(fields, { name: "hello", description: "Greets people." });
+  const r = validateSkill({ skillDir: "hello", text: "---\r\nname: hello\r\ndescription: Greets people.\r\n---\r\n" });
+  assert.deepEqual(r.errors, []);
+});
+
+test("name that differs from directory is an error (spec requirement)", () => {
+  const r = validateSkill({ skillDir: "hello", text: okSkill("greeting") });
+  assert.match(r.errors.join(" "), /does not match directory/);
+  assert.deepEqual(r.warnings, []);
 });
 
 test("very short description is a warning", () => {
