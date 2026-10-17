@@ -29,6 +29,16 @@ below:
 npx skills add titaniumcoder/titaniumcoder-skills --global --agent claude-code --skill '*'
 ```
 
+To install only `implementation` and `testing-stubs` for Claude Code:
+
+```bash
+npx skills add titaniumcoder/titaniumcoder-skills \
+  --global \
+  --agent claude-code \
+  --skill implementation \
+  --skill testing-stubs
+```
+
 ### Codex
 
 ```bash
@@ -76,10 +86,10 @@ Update globally installed skills from their original sources:
 npx skills update --global
 ```
 
-For project-local installations, use `npx skills update --project`. Check
-global installations with `npx skills list --global`; omit `--global` to list
-project-local installations. Restart or refresh an agent if it does not
-discover newly installed or updated skills immediately.
+Check global installations with `npx skills list --global`. For project-local
+installations, use `npx skills update --project` and `npx skills list
+--project`. Restart or refresh an agent if it does not discover newly installed
+or updated skills immediately.
 
 See the [`skills` CLI documentation](https://github.com/vercel-labs/skills)
 for additional installation options and the [GitHub Copilot agent skills
