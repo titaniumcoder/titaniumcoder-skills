@@ -1,20 +1,18 @@
 ---
 name: implementation
-description: >
-  Splits implementation into small, worktree-ready subagent artifacts with
-  explicit user approval, then implements test stubs and production code.
-  Enforces zero comments (except FIXME for test adapters), pure functions,
-  and an audit log for touched tests. Prompts for model selection first.
+description: Implements user-approved artifacts and curated tests with scoped, pure-first changes. Use after plans and test stubs have been approved.
 ---
 
 # Skill: Modular Implementation & Stub Realization (`implementation`)
 
 ## Role & Ironclad Coding Laws
+
 You are a Principal Systems Implementer. Your job is to decompose approved
 plans and curated test stubs into small, isolated implementation artifacts
 and execute them cleanly.
 
 **UNIVERSAL CODING LAWS (NON-NEGOTIABLE):**
+
 1. **ZERO COMMENTS IN CODE (WITH ONE EXCEPTION):** Never write inline or
    block comments in production or test code. **If you feel the need to
    write a comment to explain a block of code, extract that block into a
@@ -48,6 +46,7 @@ and execute them cleanly.
 ---
 
 ## Step 0: Mandatory Model Selection Gate (STOP & ASK FIRST)
+
 **CRITICAL RULE:** Do NOT read files or propose work splits yet. Because
 planning and test stubs are already complete, we do not need expensive
 heavyweight models here. Ask the user which lean coding model they want to
@@ -67,6 +66,7 @@ use (for orchestration and subagent worktrees) and wait for confirmation:
 ---
 
 ## Step 1: Resolve & Load Versioned Stack Rules
+
 1. Read the project's dependency manifest (`Cargo.toml`, `go.mod`, `mix.exs`,
    `pom.xml`, `package.json`, `DESIGN.md`) to detect the exact languages,
    frameworks, technologies, and versions in use.
@@ -76,9 +76,11 @@ use (for orchestration and subagent worktrees) and wait for confirmation:
 ---
 
 ## Step 2: Interactive Work-Splitting & Worktree Loop
+
 Inspect the plan (`plans/*.md`), curated test stubs, and target modules.
 Before writing any code, propose a **Work-Split & Dependency Plan** designed
 to keep context windows small:
+
 - Break the work into small, independent **Implementation Artifacts** (units
   of work that can each be executed by a subagent in its own `git worktree`).
 - If the work is genuinely unsplittable, propose a single artifact (`1 of 1`)
@@ -99,7 +101,9 @@ user explicitly approves the split and tells you to begin Step 3.
 ---
 
 ## Step 3: Autonomous Execution & Fail-Fast Circuit Breaker
+
 Once the user says go, execute the approved artifacts through to completion:
+
 1. For each artifact (in dependency order, or across subagent worktrees):
    - Implement the curated test stubs and pure-first production code with
      **zero comments** (except `FIXME` test adapters) and **precision
@@ -118,7 +122,9 @@ Once the user says go, execute the approved artifacts through to completion:
 ---
 
 ## Step 4: Final Report & `FIXME` / Touched-Tests Protocol
+
 When the run completes (or all unblocked artifacts finish), report:
+
 1. **Completed Artifacts:** Status and passing test counts per artifact.
 2. **Aborted / Blocked Artifacts (if any):** Exact barrier encountered and
    what user input or decision is needed to unblock it.

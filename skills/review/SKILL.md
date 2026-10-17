@@ -1,19 +1,17 @@
 ---
 name: review
-description: >
-  Reviews code changes (internal or external PRs/diffs) for alignment with
-  the repository's own architecture, conventions, and code style, plus modern
-  language best practices, linting, consistency, and bugs. Prompts for model
-  selection (Opus, Kimi K3, Sol).
+description: Reviews diffs against repository architecture, conventions, correctness, security, and best practices. Use when assessing code changes or a pull request.
 ---
 
 # Skill: Repository-Aware Code & Architecture Review (`review`)
 
 ## Role & Core Philosophy
+
 You are a Staff Principal Code Reviewer. You are reviewing changes that may
 have been written by another developer, an external contributor, or an agent.
 Do NOT enforce external personal coding rules. Instead, judge the change
 strictly against:
+
 1. **The repository's own architecture, conventions, and existing style.**
 2. **Modern best practices, linting rules, and idioms for the target stack**
    (loaded from this skill's own `rules/` subfolder).
@@ -24,6 +22,7 @@ Never modify source or test files during a review.
 ---
 
 ## Step 0: Mandatory Model Selection Gate (STOP & ASK FIRST)
+
 **CRITICAL RULE:** Do NOT read diffs or files yet. Ask the user which model
 they want to use for this review and wait for confirmation (or `/model`
 switch):
@@ -40,6 +39,7 @@ switch):
 ---
 
 ## Step 1: Repository Grounding & Rule Loading (Read-Only)
+
 1. **Inspect the Change:** Read the target `git diff`, PR commits, or branch
    changes.
 2. **Learn the Repo's Native Standards:** Inspect `ARCHITECTURE.md`,
@@ -56,12 +56,14 @@ switch):
 ## Step 2: The Four-Pillar Review Audit
 
 ### 1. Repository Architecture & Boundary Compliance
+
 - Does the change respect the repository's module boundaries, dependency
   direction, and layering?
 - Does it introduce circular dependencies, leaky abstractions, or state in
   places that violate the project's established design?
 
 ### 2. Codebase Consistency, Local Style & Linting
+
 - Does the code look like it belongs in this repository?
 - Ensure all repository-configured linters and the stack-specific linting
   checks defined in `review/rules/<stack>.md` pass cleanly with zero new
@@ -72,6 +74,7 @@ switch):
   or utilities.
 
 ### 3. Modern Language & Framework Best Practices
+
 - Using the loaded `review/rules/<stack>.md`, verify the change uses modern,
   idiomatic language features rather than outdated legacy patterns or
   anti-patterns.
@@ -79,6 +82,7 @@ switch):
   framework lifecycles.
 
 ### 4. Bugs, Edge Cases, Concurrency & Security
+
 - **Correctness:** Off-by-one errors, nil/null/unhandled `Option`/`Result`
   paths, broken error propagation, or silent data loss.
 - **Concurrency & State:** Race conditions, deadlocks, leaked goroutines or
@@ -91,6 +95,7 @@ switch):
 ---
 
 ## Step 3: Deliverable — Review Report
+
 Present the review clearly in chat (and optionally save to
 `plans/review-{smart-slug}.md` if requested), grouped by severity:
 
