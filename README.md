@@ -1,4 +1,4 @@
-# TitaniumCoder Skills
+# Titaniumcoder Skills
 
 Portable, lifecycle-phased Agent Skills for compatible coding agents. Each
 skill follows the [Agent Skills specification](https://agentskills.io/specification)
