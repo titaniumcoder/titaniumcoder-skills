@@ -69,6 +69,8 @@ npx skills add titaniumcoder/titaniumcoder-skills --global --agent opencode --sk
 Omit `--global` for project-local installation. To install selected skills
 instead of all of them, replace `'*'` with one or more names from this map:
 
+### Available skill names
+
 ```text
 skills/
 ├── scouting/
