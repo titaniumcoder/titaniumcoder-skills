@@ -66,6 +66,8 @@ npx skills add titaniumcoder/titaniumcoder-skills --global --agent pi --skill '*
 npx skills add titaniumcoder/titaniumcoder-skills --global --agent opencode --skill '*'
 ```
 
+### Project level skills
+
 Omit `--global` for project-local installation. To install selected skills
 instead of all of them, replace `'*'` with one or more names from this map:
 
