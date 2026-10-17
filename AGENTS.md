@@ -9,5 +9,6 @@ This repository holds titaniumcoder's personal Agent Skills collection. Skills m
 - One skill per directory under `skills/`; the directory name must match the frontmatter `name`.
 - Frontmatter must include a `name` (lowercase/hyphens, max 64 chars) and a `description` (max 1024 chars) that states both what the skill does and when to use it.
 - Reference bundled files with relative paths (`references/`, `scripts/`, `assets/`).
+- Keep `README.md` up to date whenever skills, installation methods, or supported agent harnesses change.
 - Run `npm run validate && npm test && npm run lint` before committing.
 - Commit repository changes with concise, descriptive messages.

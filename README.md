@@ -19,28 +19,54 @@ and lives in its own directory under `skills/`.
 
 ## Install
 
-Install all five skills globally for the requested agents with
-[`skills`](https://github.com/vercel-labs/skills):
+Use [`skills`](https://github.com/vercel-labs/skills) to install globally for
+one harness at a time. Each command installs all skills in the directory map
+below:
+
+### Claude Code
 
 ```bash
-npx skills add titaniumcoder/titaniumcoder-skills \
-  --global \
-  --skill '*' \
-  --agent claude-code \
-  --agent codex \
-  --agent github-copilot \
-  --agent pi \
-  --agent opencode
+npx skills add titaniumcoder/titaniumcoder-skills --global --agent claude-code --skill '*'
 ```
 
-The installer creates links in each agent's supported skills directory. Global
-installation makes them available across projects. GitHub Copilot skills work
-in the Copilot app, Copilot CLI, and supported IDE experiences; the installer
-targets GitHub Copilot's personal skills directory.
+### Codex
 
-To install interactively instead, run `npx skills add
-titaniumcoder/titaniumcoder-skills` and select the desired agents and skills
-when prompted. For project-local installation, omit `--global`.
+```bash
+npx skills add titaniumcoder/titaniumcoder-skills --global --agent codex --skill '*'
+```
+
+### GitHub Copilot
+
+```bash
+npx skills add titaniumcoder/titaniumcoder-skills --global --agent github-copilot --skill '*'
+```
+
+This installs to Copilot's personal skills directory, which is used by the
+Copilot app as well as Copilot CLI and supported IDE experiences.
+
+### Pi
+
+```bash
+npx skills add titaniumcoder/titaniumcoder-skills --global --agent pi --skill '*'
+```
+
+### OpenCode
+
+```bash
+npx skills add titaniumcoder/titaniumcoder-skills --global --agent opencode --skill '*'
+```
+
+Omit `--global` for project-local installation. To install selected skills
+instead of all of them, replace `'*'` with one or more names from this map:
+
+```text
+skills/
+├── scouting/
+├── planning/
+├── testing-stubs/
+├── implementation/
+└── review/
+```
 
 ## Update
 
@@ -50,8 +76,10 @@ Update globally installed skills from their original sources:
 npx skills update --global
 ```
 
-Check installed skills with `npx skills list --global`. Restart or refresh an
-agent if it does not discover newly installed or updated skills immediately.
+For project-local installations, use `npx skills update --project`. Check
+global installations with `npx skills list --global`; omit `--global` to list
+project-local installations. Restart or refresh an agent if it does not
+discover newly installed or updated skills immediately.
 
 See the [`skills` CLI documentation](https://github.com/vercel-labs/skills)
 for additional installation options and the [GitHub Copilot agent skills
