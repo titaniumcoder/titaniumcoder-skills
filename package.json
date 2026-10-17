@@ -1,0 +1,12 @@
+{
+  "name": "titaniumcoder-skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "titaniumcoder's Agent Skills collection — portable SKILL.md directories usable by any Agent Skills implementation.",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-skills.mjs",
+    "test": "node --test \"scripts/*.test.mjs\"",
+    "lint": "npx -y markdownlint-cli2"
+  }
+}
