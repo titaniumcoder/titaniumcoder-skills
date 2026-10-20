@@ -44,19 +44,35 @@ Copilot app/CLI (`/agent`) rather than argument-taking commands.
 
 ### Model selection
 
-All three support pinning a model in the adapter's frontmatter:
+All three support pinning a model in the adapter's frontmatter — but pinning
+only makes sense where the provider is fixed:
 
-- **pi** (with [`pi-prompt-template-model`](https://www.npmjs.com/package/pi-prompt-template-model)):
-  `model: claude-opus-4, gpt-5.4` — comma-separated fallback order.
-- **Claude Code**: `model: sonnet` | `opus` | `haiku` (default: inherit session).
-- **Copilot**: `model: "Claude Sonnet 4"` — display name; an array acts as fallback.
+- **Claude Code**: `model: sonnet` | `opus` | `haiku` — safe to pin; the
+  provider is always Anthropic.
+- **Copilot**: `model: "Claude Sonnet 4"` — display name; safe to pin; the
+  provider is the GitHub models subscription. An array acts as fallback.
+- **pi**: `model:` accepts provider-qualified ids (with
+  [`pi-prompt-template-model`](https://www.npmjs.com/package/pi-prompt-template-model)),
+  but pi is multi-provider by design (OpenRouter on one machine, a Copilot
+  subscription on another). A pinned id would be wrong on some machines, so
+  pi adapters ship **unpinned** and use instead:
+  - the session model you pick with `/model`, or
+  - a per-invocation override: `/plan --model=openrouter/anthropic/claude-sonnet-4.5`.
 
-Adapters ship without a `model` key (inherit the session model), which keeps
-the skills' Step 0 model-selection gate active. Pin a model to skip that gate.
+Unpinned adapters also keep the skills' Step 0 model-selection gate active;
+add a `model:` line to pin a model and skip that gate.
+
+### Do you need the skills installed at all?
+
+No. The skill files under `skills/` are the **single source of truth** the
+adapters point at — they only cost context when installed as auto-triggering
+Agent Skills, which you should not do when using the adapters. Install them
+as skills only for agents without a command mechanism (e.g. Codex,
+OpenCode), via the skills CLI below.
 
 ## Install
 
-### One-command install (prompts, all agents)
+### One-command install (Claude Code + Copilot)
 
 On a new machine, clone and run:
 
@@ -67,18 +83,17 @@ cd titaniumcoder-skills && ./install.sh
 
 `install.sh` installs from the checkout you run it in (or clones the GitHub
 repo on fresh machines) to the stable path `~/.agents/skills-src`, then
-copies `adapters/pi/*.md` → `~/.pi/agent/prompts/`,
-`adapters/claude/*.md` → `~/.claude/commands/` (if present), and
-`adapters/copilot/*.agent.md` → `~/.copilot/agents/` (if present). Run it
-again (or `git pull` + rerun) to update everything at once. Add
-`--with-skills` to *also* expose `skills/` as auto-triggering Agent Skills in
-`~/.agents/skills`.
+copies `adapters/claude/*.md` → `~/.claude/commands/` (if `~/.claude` exists)
+and `adapters/copilot/*.agent.md` → `~/.copilot/agents/` (if `~/.copilot`
+exists). Run it again (or `git pull` + rerun) to update everything at once.
+Add `--with-skills` to *also* expose `skills/` as auto-triggering Agent
+Skills in `~/.agents/skills` (not recommended — adapters are preferred).
 
-### Skills CLI (per-agent, auto-triggering)
+### Skills CLI (only for agents without a command mechanism)
 
-Alternatively, use [`skills`](https://github.com/vercel-labs/skills) to install
-globally for one harness at a time. Each command installs all skills in the
-directory map below:
+Use [`skills`](https://github.com/vercel-labs/skills) to install
+auto-triggering Agent Skills for harnesses like Codex or OpenCode. Each
+command installs all skills in the directory map below:
 
 Use [`skills`](https://github.com/vercel-labs/skills) to install globally for
 one harness at a time. Each command installs all skills in the directory map
@@ -174,13 +189,18 @@ contract.
 
 ## Pi package
 
-This repository is also a [pi package](https://pi.dev) (`pi-package` keyword
-in `package.json`). Installing it as a package exposes the skills
-(self-contained, rules included) with auto-triggering enabled:
+### Pi (recommended: pi package, no install.sh)
+
+The repository is a [pi package](https://pi.dev) (`pi-package` keyword in
+`package.json`) exposing only the prompt templates:
 
 ```bash
 pi install git:github.com/titaniumcoder/titaniumcoder-skills@main
 ```
 
-Use `install.sh` instead if you want the prompt-adapter mode with skill
-auto-triggering off.
+This deploys `/scout` `/plan` `/stubs` `/implement` `/review` as prompt
+templates **without** auto-triggering skills, and the adapters resolve
+`skills/<name>/SKILL.md` (and its versioned `rules/`) from the installed
+package at `~/.pi/agent/git/github.com/titaniumcoder/titaniumcoder-skills/`.
+Updates are `pi update` (reconciles the pinned git ref) — no `install.sh`, no
+separate clone needed on pi-only machines.
