@@ -5,8 +5,9 @@ skill follows the [Agent Skills specification](https://agentskills.io/specificat
 and lives in its own directory under `skills/`.
 
 The skills are the **source of truth**. Prompt adapters under `adapters/`
-wrap them as explicit slash commands / custom agents for pi, Claude Code,
-and GitHub Copilot; `install.sh` deploys everything on a new machine.
+wrap them as explicit slash commands for pi and Claude Code — the two
+supported agents. `install.sh` deploys the Claude Code commands on a new
+machine; pi installs the templates directly as a pi package.
 
 ## Skills
 
@@ -27,20 +28,19 @@ These workflows are deliberate, gated pipelines (scouting → planning →
 testing-stubs → implementation → review) rather than reactive capabilities,
 so they work best when **you** invoke them explicitly as commands instead of
 letting the model auto-trigger them as skills. Thin adapters (4 lines each)
-exist for all three command mechanisms:
+exist for both supported command mechanisms:
 
-| Command | pi | Claude Code | GitHub Copilot |
-| --- | --- | --- | --- |
-| Scouting | `/scout` | `/scout` | `plan`-style custom agent |
-| Planning | `/plan` | `/plan` | custom agent `plan` |
-| Test stubs | `/stubs` | `/stubs` | custom agent `stubs` |
-| Implementation | `/implement` | `/implement` | custom agent `implement` |
-| Review | `/review` | `/review` | custom agent `review` |
+| Command | pi | Claude Code |
+| --- | --- | --- |
+| Scouting | `/scout` | `/scout` |
+| Planning | `/plan` | `/plan` |
+| Test stubs | `/stubs` | `/stubs` |
+| Implementation | `/implement` | `/implement` |
+| Review | `/review` | `/review` |
 
 Every adapter is a wrapper that tells the agent to read and follow the
-`SKILL.md` in the stable clone, so the workflow logic exists in exactly one
-place. Copilot custom agents (`.agent.md`) are personas you switch to in the
-Copilot app/CLI (`/agent`) rather than argument-taking commands.
+`SKILL.md` in the installed package or stable clone, so the workflow logic
+exists in exactly one place.
 
 ### Model selection
 
@@ -49,8 +49,6 @@ only makes sense where the provider is fixed:
 
 - **Claude Code**: `model: sonnet` | `opus` | `haiku` — safe to pin; the
   provider is always Anthropic.
-- **Copilot**: `model: "Claude Sonnet 4"` — display name; safe to pin; the
-  provider is the GitHub models subscription. An array acts as fallback.
 - **pi**: `model:` accepts provider-qualified ids (with
   [`pi-prompt-template-model`](https://www.npmjs.com/package/pi-prompt-template-model)),
   but pi is multi-provider by design (OpenRouter on one machine, a Copilot
@@ -66,15 +64,14 @@ add a `model:` line to pin a model and skip that gate.
 
 No. The skill files under `skills/` are the **single source of truth** the
 adapters point at — they only cost context when installed as auto-triggering
-Agent Skills, which you should not do when using the adapters. Install them
-as skills only for agents without a command mechanism (e.g. Codex,
-OpenCode), via the skills CLI below.
+Agent Skills, which never happens with these two agents. The skills stay in
+the repository purely as the shared workflow definitions.
 
 ## Install
 
-### One-command install (Claude Code + Copilot)
+### One-command install (Claude Code)
 
-On a new machine, clone and run:
+On a new machine (any OS with git-bash/WSL on Windows), clone and run:
 
 ```bash
 git clone https://github.com/titaniumcoder/titaniumcoder-skills.git
@@ -83,113 +80,11 @@ cd titaniumcoder-skills && ./install.sh
 
 `install.sh` installs from the checkout you run it in (or clones the GitHub
 repo on fresh machines) to the stable path `~/.agents/skills-src`, then
-copies `adapters/claude/*.md` → `~/.claude/commands/` (if `~/.claude` exists)
-and `adapters/copilot/*.agent.md` → `~/.copilot/agents/` (if `~/.copilot`
-exists). Run it again (or `git pull` + rerun) to update everything at once.
-Add `--with-skills` to *also* expose `skills/` as auto-triggering Agent
-Skills in `~/.agents/skills` (not recommended — adapters are preferred).
+copies `adapters/claude/*.md` → `~/.claude/commands/`. Run it again (or
+`git pull` + rerun) to update. `/scout` `/plan` `/stubs` `/implement`
+`/review` become available in Claude Code.
 
-### Skills CLI (only for agents without a command mechanism)
-
-Use [`skills`](https://github.com/vercel-labs/skills) to install
-auto-triggering Agent Skills for harnesses like Codex or OpenCode. Each
-command installs all skills in the directory map below:
-
-Use [`skills`](https://github.com/vercel-labs/skills) to install globally for
-one harness at a time. Each command installs all skills in the directory map
-below:
-
-### Claude Code
-
-```bash
-npx skills add titaniumcoder/titaniumcoder-skills --global --agent claude-code --skill '*'
-```
-
-To install only `implementation` and `testing-stubs` for Claude Code:
-
-```bash
-npx skills add titaniumcoder/titaniumcoder-skills \
-  --global \
-  --agent claude-code \
-  --skill implementation \
-  --skill testing-stubs
-```
-
-### Codex
-
-```bash
-npx skills add titaniumcoder/titaniumcoder-skills --global --agent codex --skill '*'
-```
-
-### GitHub Copilot
-
-```bash
-npx skills add titaniumcoder/titaniumcoder-skills --global --agent github-copilot --skill '*'
-```
-
-This installs to Copilot's personal skills directory, which is used by the
-Copilot app as well as Copilot CLI and supported IDE experiences.
-
-### Pi
-
-```bash
-npx skills add titaniumcoder/titaniumcoder-skills --global --agent pi --skill '*'
-```
-
-### OpenCode
-
-```bash
-npx skills add titaniumcoder/titaniumcoder-skills --global --agent opencode --skill '*'
-```
-
-### Project level skills
-
-Omit `--global` for project-local installation. To install selected skills
-instead of all of them, replace `'*'` with one or more names from this map:
-
-### Available skill names
-
-```text
-skills/
-├── scouting/
-├── planning/
-├── testing-stubs/
-├── implementation/
-└── review/
-```
-
-## Update
-
-Update globally installed skills from their original sources:
-
-```bash
-npx skills update --global
-```
-
-Check global installations with `npx skills list --global`. For project-local
-installations, use `npx skills update --project` and `npx skills list
---project`. Restart or refresh an agent if it does not discover newly installed
-or updated skills immediately.
-
-See the [`skills` CLI documentation](https://github.com/vercel-labs/skills)
-for additional installation options and the [GitHub Copilot agent skills
-documentation](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
-for Copilot-specific details.
-
-## Language-specific rules
-
-The `implementation` and `review` skills load versioned best-practice rules
-at runtime from their own `rules/` folders (`rules/lang-*.md`,
-`rules/fw-*.md`, `rules/tech-*.md`), matched against the target project's
-dependency manifest (`Cargo.toml`, `go.mod`, `package.json`, …). This works
-identically whether the entry point is a skill or a prompt adapter, because
-the agent reads those files itself — the skill/prompt mechanism never loads
-them. See `skills/rules-convention.md` for the naming convention and content
-contract.
-
-## Pi package
-
-### Pi (recommended: pi package, no install.sh)
+### Pi (pi package, no install.sh)
 
 The repository is a [pi package](https://pi.dev) (`pi-package` keyword in
 `package.json`) exposing only the prompt templates:
@@ -202,5 +97,44 @@ This deploys `/scout` `/plan` `/stubs` `/implement` `/review` as prompt
 templates **without** auto-triggering skills, and the adapters resolve
 `skills/<name>/SKILL.md` (and its versioned `rules/`) from the installed
 package at `~/.pi/agent/git/github.com/titaniumcoder/titaniumcoder-skills/`.
-Updates are `pi update` (reconciles the pinned git ref) — no `install.sh`, no
-separate clone needed on pi-only machines.
+No `install.sh`, no separate clone needed on pi-only machines.
+
+### Other agents
+
+Codex and OpenCode have no slash-command mechanism, so supporting them would
+require auto-triggering skills (always-on context cost) — this collection is
+therefore scoped to **pi and Claude Code only**. The `skills/` directories
+still follow the [Agent Skills specification](https://agentskills.io/specification),
+so the underlying workflows remain portable if that ever changes.
+
+Historically this repository also documented installs for Codex, OpenCode,
+and GitHub Copilot; those sections were removed, and the Copilot custom-agent
+adapters can be recovered from git history if needed.
+
+The skill names, for reference:
+
+```text
+skills/
+├── scouting/
+├── planning/
+├── testing-stubs/
+├── implementation/
+└── review/
+```
+
+## Updating
+
+- **pi**: `pi update` (reconciles the installed git package).
+- **Claude Code**: `git pull` in `~/.agents/skills-src`, then rerun
+  `install.sh` (or run it from a fresh checkout).
+
+## Language-specific rules
+
+The `implementation` and `review` skills load versioned best-practice rules
+at runtime from their own `rules/` folders (`rules/lang-*.md`,
+`rules/fw-*.md`, `rules/tech-*.md`), matched against the target project's
+dependency manifest (`Cargo.toml`, `go.mod`, `package.json`, …). This works
+identically whether the entry point is a skill or a prompt adapter, because
+the agent reads those files itself — the skill/prompt mechanism never loads
+them. See `skills/rules-convention.md` for the naming convention and content
+contract.

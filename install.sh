@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
-# titaniumcoder-skills installer (Claude Code + GitHub Copilot adapters).
+# titaniumcoder-skills installer (Claude Code command adapters).
 #
 # Clones (or updates) this repository to a stable path on the machine, then
-# installs the Claude Code command adapters and Copilot custom agents. All
-# adapters point back at the stable clone, so `git pull` (or rerunning this
-# script) updates every workflow at once.
+# installs the Claude Code command adapters. They point back at the stable
+# clone, so `git pull` (or rerunning this script) updates every workflow at
+# once.
 #
 # For pi, this script is NOT used: install the pi package instead with
 #   pi install git:github.com/titaniumcoder/titaniumcoder-skills@main
 # which deploys the prompt templates and updates via `pi update`.
 #
-# Usage:
-#   ./install.sh                # update clone + install prompt adapters
-#   ./install.sh --with-skills  # additionally expose skills/ as auto-triggering
-#                               # Agent Skills in ~/.agents/skills
+# Usage: ./install.sh
 #
 # The skills/ directories remain the source of truth; adapters are thin
 # wrappers that tell the agent to read and follow skills/<name>/SKILL.md.
@@ -27,14 +24,6 @@ DEST="${HOME}/.agents/skills-src"
 # local commits deploy immediately; otherwise fall back to the GitHub URL.
 if [[ -d "${SCRIPT_DIR}/adapters" && -d "${SCRIPT_DIR}/.git" ]]; then
   REPO_URL="${SCRIPT_DIR}"
-fi
-MODE="prompts"
-
-if [[ "${1:-}" == "--with-skills" ]]; then
-  MODE="skills-and-prompts"
-elif [[ -n "${1:-}" ]]; then
-  echo "Unknown option: $1 (expected --with-skills or nothing)" >&2
-  exit 1
 fi
 
 # 1. Clone or update the stable source checkout.
@@ -53,27 +42,10 @@ if [[ ! -d "${DEST}/adapters" ]]; then
   exit 1
 fi
 
-# 2. Install prompt adapters (thin wrappers, one file per agent per workflow).
-if [[ -d "${HOME}/.claude" ]]; then
-  mkdir -p "${HOME}/.claude/commands"
-  cp "${DEST}"/adapters/claude/*.md "${HOME}/.claude/commands/"
-fi
+# 2. Install the Claude Code command adapters (thin wrappers).
+mkdir -p "${HOME}/.claude/commands"
+cp "${DEST}"/adapters/claude/*.md "${HOME}/.claude/commands/"
 
-if [[ -d "${HOME}/.copilot" ]]; then
-  mkdir -p "${HOME}/.copilot/agents"
-  cp "${DEST}"/adapters/copilot/*.agent.md "${HOME}/.copilot/agents/"
-fi
-
-# 3. Optionally expose the skills themselves (auto-triggering agents).
-if [[ "${MODE}" == "skills-and-prompts" ]]; then
-  mkdir -p "${HOME}/.agents/skills"
-  for dir in "${DEST}"/skills/*/; do
-    ln -sfn "${dir}" "${HOME}/.agents/skills/$(basename "${dir}")"
-  done
-fi
-
-echo "Installed (mode: ${MODE}) from ${DEST}:"
-[[ -d "${HOME}/.claude" ]] && echo "  - Claude Code commands -> ~/.claude/commands/ (/scout /plan /stubs /implement /review)"
-[[ -d "${HOME}/.copilot" ]] && echo "  - Copilot custom agents -> ~/.copilot/agents/"
-[[ "${MODE}" == "skills-and-prompts" ]] && echo "  - skills symlinked     -> ~/.agents/skills/"
-echo "Run /reload in pi (or restart your agent) to pick up new or updated commands."
+echo "Installed from ${DEST}: Claude Code commands -> ~/.claude/commands/"
+echo "  (/scout /plan /stubs /implement /review)"
+echo "Restart Claude Code to pick up new or updated commands."
