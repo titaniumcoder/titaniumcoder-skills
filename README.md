@@ -65,8 +65,9 @@ git clone https://github.com/titaniumcoder/titaniumcoder-skills.git
 cd titaniumcoder-skills && ./install.sh
 ```
 
-`install.sh` clones/updates the repo to the stable path `~/.agents/skills-src`,
-then copies `adapters/pi/*.md` → `~/.pi/agent/prompts/`,
+`install.sh` installs from the checkout you run it in (or clones the GitHub
+repo on fresh machines) to the stable path `~/.agents/skills-src`, then
+copies `adapters/pi/*.md` → `~/.pi/agent/prompts/`,
 `adapters/claude/*.md` → `~/.claude/commands/` (if present), and
 `adapters/copilot/*.agent.md` → `~/.copilot/agents/` (if present). Run it
 again (or `git pull` + rerun) to update everything at once. Add

@@ -17,7 +17,13 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/titaniumcoder/titaniumcoder-skills.git"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST="${HOME}/.agents/skills-src"
+# When run from a checkout of this repository, install from that checkout so
+# local commits deploy immediately; otherwise fall back to the GitHub URL.
+if [[ -d "${SCRIPT_DIR}/adapters" && -d "${SCRIPT_DIR}/.git" ]]; then
+  REPO_URL="${SCRIPT_DIR}"
+fi
 MODE="prompts"
 
 if [[ "${1:-}" == "--with-skills" ]]; then
@@ -29,9 +35,18 @@ fi
 
 # 1. Clone or update the stable source checkout.
 if [[ -d "${DEST}/.git" ]]; then
+  if ! git -C "${DEST}" remote get-url origin >/dev/null 2>&1; then
+    rm -rf "${DEST}"
+  fi
+fi
+if [[ -d "${DEST}/.git" ]]; then
   git -C "${DEST}" pull --ff-only
 else
-  git clone --depth 1 "${REPO_URL}" "${DEST}"
+  git clone "${REPO_URL}" "${DEST}"
+fi
+if [[ ! -d "${DEST}/adapters" ]]; then
+  echo "ERROR: ${DEST} has no adapters/ — the source checkout may be stale." >&2
+  exit 1
 fi
 
 # 2. Install prompt adapters (thin wrappers, one file per agent per workflow).

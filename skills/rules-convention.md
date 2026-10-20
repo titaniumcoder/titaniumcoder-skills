@@ -38,6 +38,11 @@ Each rules file must contain:
 
 ## Current status
 
+The canonical rules files live in `skills/implementation/rules/` and are
+mirrored into `skills/review/rules/` by `npm run sync-rules` — run it after
+any rules change (and before committing, alongside
+`npm run validate && npm test && npm run lint`).
+
 Rules directories may contain `.gitkeep` placeholders. A skill that fails to
 find a matching rules file should say so and fall back to general modern best
 practices for the detected stack rather than silently skipping the check.
