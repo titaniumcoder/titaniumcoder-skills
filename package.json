@@ -7,6 +7,10 @@
   "engines": {
     "node": ">=20.11"
   },
+  "keywords": ["pi-package"],
+  "pi": {
+    "skills": ["skills/*"]
+  },
   "scripts": {
     "validate": "node scripts/validate-skills.mjs",
     "test": "node --test \"scripts/*.test.mjs\"",
