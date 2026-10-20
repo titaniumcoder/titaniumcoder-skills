@@ -2,7 +2,8 @@
 
 Portable, lifecycle-phased Agent Skills for compatible coding agents. Each
 skill follows the [Agent Skills specification](https://agentskills.io/specification)
-and lives in its own directory under `skills/`.
+and lives in its own directory under `skills/`. See
+[CHANGELOG.md](CHANGELOG.md) for recent changes.
 
 The skills are the **source of truth**. Prompt adapters under `adapters/`
 wrap them as explicit slash commands for pi and Claude Code — the two
