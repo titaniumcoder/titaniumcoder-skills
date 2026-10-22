@@ -39,9 +39,9 @@ exist for both supported command mechanisms:
 | Implementation | `/implement` | `/implement` |
 | Review | `/review` | `/review` |
 
-Every adapter is a wrapper that tells the agent to read and follow the
-`SKILL.md` in the installed package or stable clone, so the workflow logic
-exists in exactly one place.
+Every adapter is a thin wrapper that tells the agent to invoke the matching
+skill by name (e.g. "invoke the `planning` skill"), so the workflow logic
+exists in exactly one place and nothing depends on install paths.
 
 ### Model selection
 
@@ -63,10 +63,11 @@ add a `model:` line to pin a model and skip that gate.
 
 ### Do you need the skills installed at all?
 
-No. The skill files under `skills/` are the **single source of truth** the
-adapters point at — they only cost context when installed as auto-triggering
-Agent Skills, which never happens with these two agents. The skills stay in
-the repository purely as the shared workflow definitions.
+For **pi**, installing the package loads the five skills as real Agent
+Skills: only their one-line `name`/`description` frontmatter stays in
+context, and the full `SKILL.md` is read on demand — either when you invoke
+an adapter command or when a description matches what you are already doing.
+The skills are the **single source of truth** the adapters point at.
 
 ## Install
 
@@ -95,10 +96,12 @@ pi install git:github.com/titaniumcoder/titaniumcoder-skills@main
 ```
 
 This deploys `/scout` `/plan` `/stubs` `/implement` `/review` as prompt
-templates **without** auto-triggering skills, and the adapters resolve
-`skills/<name>/SKILL.md` (and its versioned `rules/`) from the installed
-package at `~/.pi/agent/git/github.com/titaniumcoder/titaniumcoder-skills/`.
-No `install.sh`, no separate clone needed on pi-only machines.
+templates, and the five `skills/` directories as pi Agent Skills. The
+adapters resolve skills **by name**, so pi itself injects each skill's
+absolute location — the adapters never hardcode install paths, which keeps
+them working across user-scope git installs, project-scope (`--local`)
+installs, and any pi version. No `install.sh`, no separate clone needed on
+pi-only machines.
 
 ### Other agents
 

@@ -7,6 +7,25 @@ except that entries are grouped by **date** instead of version numbers — the
 project is not versioned for now. Each heading is the date the changes were
 committed; details live in the referenced git commits.
 
+## 2026-10-22
+
+### Fixed
+
+- pi adapters no longer hardcode the install path
+  `~/.pi/agent/git/github.com/titaniumcoder/titaniumcoder-skills/` — any
+  install layout other than a user-scope git install (project-scope
+  `--local`, npm, older pi clone roots) failed with `ENOENT` when an adapter
+  tried to read `skills/<name>/SKILL.md`. The `pi` manifest now also declares
+  `skills/*/SKILL.md`, so pi loads the five skills as real Agent Skills and
+  the adapters resolve them **by name**; pi injects each skill's absolute
+  location itself, so path resolution is install-layout independent.
+
+### Changed
+
+- Installing the pi package now puts the five skill one-line descriptions in
+  context (full `SKILL.md` still loads on demand); the README's
+  "Do you need the skills installed at all?" section reflects this.
+
 ## 2026-10-20
 
 ### Added

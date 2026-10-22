@@ -9,7 +9,8 @@
   },
   "keywords": ["pi-package"],
   "pi": {
-    "prompts": ["adapters/pi/*.md"]
+    "prompts": ["adapters/pi/*.md"],
+    "skills": ["skills/*/SKILL.md"]
   },
   "scripts": {
     "validate": "node scripts/validate-skills.mjs",
